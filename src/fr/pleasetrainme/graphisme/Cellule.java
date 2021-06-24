@@ -92,11 +92,22 @@ public class Cellule implements Comparable<Cellule> {
             else cellule.genes.set(i, autreParent.genes.get(i));
             i++;
         }
-        for (int j = 0; j < cellule.genes.size(); j++) {
-            int nombreRandom = random.nextInt(20);
-            if(nombreRandom == 0) cellule.genes.set(j, Gene.getRandomGene());
-        }
+        cellule.muter();
         return cellule;
+    }
+
+    private void muter() {
+        Random random = new Random();
+        for (int j = 0; j < this.genes.size(); j++) {
+            int nombreRandom = random.nextInt(20);
+            if(nombreRandom == 0) this.genes.set(j, Gene.getRandomGene());
+        }
+    }
+
+    private void reset() {
+        this.estArrive = false;
+        this.currentGene = 0;
+        this.muter();
     }
 
     /**

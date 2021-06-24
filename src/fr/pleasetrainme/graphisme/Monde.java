@@ -14,12 +14,9 @@ public class Monde extends JPanel {
     private static final Color END_COLOR = Color.GREEN;
     private static final Color CELLULE_COLOR = Color.BLACK;
 
+    private int nombreIteration;
     private Timer game;
     private boolean doitAfficher, doitDeplacer;
-    private int nombreTour;
-    /**
-     * variable valant vrai si une cellule a trouvé le cercle, sinon faux
-     */
     private boolean finIteration;
     private List<Cellule> cellules;
 
@@ -39,10 +36,7 @@ public class Monde extends JPanel {
     }
 
     private void deplacerMob() {
-        boolean evoluer = finIteration;
-        //on test si c'est la fin
-        //on augmente le nombre de tour
-        this.nombreTour++;
+        int nbCellulesArrive = 0;
         //on déplace les cellules
         for (Cellule cellule : this.cellules) {
             cellule.seDeplacer(getWidth(), getHeight());
@@ -54,14 +48,12 @@ public class Monde extends JPanel {
             }
             if (END_Y > celluleY || celluleY > END_Y + ARRIVE_SIZE) continue;
             cellule.finIteration();
-            //on fait le dernier tour
-            finIteration = true;
+            nbCellulesArrive++;
         }
-        if(evoluer) {
+        if(nbCellulesArrive >= this.cellules.size()*5/100) {
             this.evoluer();
             this.replacerCellule();
-            System.out.println("Prochaine itération");
-            this.nombreTour = 0;
+            System.out.println("Début de l'itération: " + this.nombreIteration++);
             finIteration = false;
             this.doitDeplacer = true;
             this.doitAfficher = true;
@@ -75,14 +67,30 @@ public class Monde extends JPanel {
         this.cellules.forEach(cellule -> cellule.setPos(198, 525));
     }
 
+    /**
+     * Méthode faisant évoluer la liste courante des cellules afin d'améliorer leur score.
+     */
     private void evoluer() {
         List<Cellule> cellules = new ArrayList<>(this.cellules.size());
         Collections.sort(this.cellules);
-        Cellule meilleur = this.cellules.get(0);
-        for (int i = 0; i < this.cellules.size(); i++) {
-            cellules.add(meilleur.reproduire(this.cellules.get(i)));
+        /*
+        On prend les meilleurs de la population afin de les reproduire, pour déterminer combien de meilleurs nous prenons, on calcule '5%' de la population totale
+         */
+        int nbMeilleurs = this.cellules.size()*5/100;
+        //Ensuite on calcule le nombre de cellule qui va reproduire avec un des meilleurs
+        int cellulesParMeilleur = (this.cellules.size()-nbMeilleurs)/nbMeilleurs;
+        //On fait évoluer les cellules
+        for (int i = 0; i < nbMeilleurs; i++) {
+            //On ajoute les meilleurs à la nouvelle liste
+            Cellule meilleur = this.cellules.get(i);
+            System.out.println("Meilleur chemin: " + meilleur.getNbDeplacements());
+            cellules.add(meilleur);
+            //On fait se reproduire les meilleurs avec les autres cellules et on ajoute les nouvelles cellules à la liste
+            for (int j = 0; j < cellulesParMeilleur; j++) {
+                Cellule courante = this.cellules.get(i*nbMeilleurs+j);
+                cellules.add(meilleur.reproduire(courante));
+            }
         }
-        System.out.println(this.cellules.get(0).getNbDeplacements());
         this.cellules = cellules;
     }
 
@@ -100,7 +108,6 @@ public class Monde extends JPanel {
     }
 
     public void lancerIteration() {
-        this.nombreTour = 0;
         this.finIteration = false;
         //on place les cellules à leurs place
         this.replacerCellule();

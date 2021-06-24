@@ -21,12 +21,12 @@ public class Choix extends JPanel {
 
     public int getNbPop() {
         String numberStr = this.popField.getText();
-        int nb = 200;
+        int nb = 100;
         try {
             nb = Integer.parseInt(numberStr);
             return nb;
         } catch (NumberFormatException ignored) {
-            System.out.println("Erreur lors de la lecture du nombre de population => population par défaut: 50");
+            System.out.println("Erreur lors de la lecture du nombre de population => population par défaut: 100");
             return nb;
         }
     }
