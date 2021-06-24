@@ -102,7 +102,6 @@ public class Monde extends Observable {
             Cellule meilleur = this.cellules.get(i);
             //on ajoute le meilleur chemin afin de calculer le meilleur chemin moyen parmis les 5%
             sommeChemin += meilleur.getNbDeplacements();
-            System.out.println("Meilleur chemin moyen: " + meilleur.getNbDeplacements());
             cellules.add(meilleur);
             //On fait se reproduire les meilleurs avec les autres cellules et on ajoute les nouvelles cellules à la liste
             for (int j = 0; j < cellulesParMeilleur; j++) {
