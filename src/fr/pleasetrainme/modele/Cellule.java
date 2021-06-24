@@ -1,4 +1,4 @@
-package fr.pleasetrainme.graphisme;
+package fr.pleasetrainme.modele;
 
 import java.util.ArrayList;
 import java.util.List;

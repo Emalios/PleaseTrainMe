@@ -1,4 +1,6 @@
-package fr.pleasetrainme.graphisme;
+package fr.pleasetrainme.modele;
+
+import fr.pleasetrainme.composants.Boutons;
 
 import javax.swing.*;
 import java.awt.*;

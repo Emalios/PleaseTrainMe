@@ -1,7 +1,5 @@
 package fr.pleasetrainme;
 
-import fr.pleasetrainme.graphisme.Principale;
-
 import javax.swing.*;
 
 public class Main {

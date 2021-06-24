@@ -1,4 +1,6 @@
-package fr.pleasetrainme.graphisme;
+package fr.pleasetrainme.composants;
+
+import fr.pleasetrainme.Principale;
 
 import javax.swing.*;
 import java.awt.*;
