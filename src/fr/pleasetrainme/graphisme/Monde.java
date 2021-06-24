@@ -39,7 +39,8 @@ public class Monde extends JPanel {
     }
 
     private void deplacerMob() {
-        boolean evoluer = false;
+        boolean evoluer = finIteration;
+        //on test si c'est la fin
         //on augmente le nombre de tour
         this.nombreTour++;
         //on déplace les cellules
@@ -48,17 +49,20 @@ public class Monde extends JPanel {
             int celluleX = cellule.getX();
             int celluleY = cellule.getY();
             //on teste si la cellule a atteint l'arrivé
-            if (getWidth() / 2 - ARRIVE_SIZE / 2 > celluleX || celluleX > getWidth() / 2 - ARRIVE_SIZE / 2 + ARRIVE_SIZE)
+            if (getWidth() / 2 - ARRIVE_SIZE / 2 > celluleX || celluleX > getWidth() / 2 - ARRIVE_SIZE / 2 + ARRIVE_SIZE) {
                 continue;
+            }
             if (END_Y > celluleY || celluleY > END_Y + ARRIVE_SIZE) continue;
             cellule.finIteration();
-            if(nombreTour == 9998) evoluer = true;
+            //on fait le dernier tour
+            finIteration = true;
         }
         if(evoluer) {
             this.evoluer();
             this.replacerCellule();
             System.out.println("Prochaine itération");
             this.nombreTour = 0;
+            finIteration = false;
             this.doitDeplacer = true;
             this.doitAfficher = true;
         }

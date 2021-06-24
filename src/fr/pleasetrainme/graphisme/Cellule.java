@@ -87,16 +87,14 @@ public class Cellule implements Comparable<Cellule> {
         int i = 0;
         Random random = new Random();
         while (i < this.currentGene && i < autreParent.currentGene) {
-            int nombreRandom = random.nextInt(9);
-            if(nombreRandom < 4) {
-                cellule.genes.set(i, this.genes.get(i));
-            } else if (nombreRandom < 7){
-                cellule.genes.set(i, autreParent.genes.get(i));
-            } else {
-                i++;
-                continue;
-            }
+            int nombreRandom = random.nextInt(2);
+            if(nombreRandom == 0) cellule.genes.set(i, this.genes.get(i));
+            else cellule.genes.set(i, autreParent.genes.get(i));
             i++;
+        }
+        for (int j = 0; j < cellule.genes.size(); j++) {
+            int nombreRandom = random.nextInt(20);
+            if(nombreRandom == 0) cellule.genes.set(j, Gene.getRandomGene());
         }
         return cellule;
     }
