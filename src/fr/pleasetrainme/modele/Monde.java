@@ -63,6 +63,9 @@ public class Monde extends Observable {
             nbCellulesArrive++;
 
         }
+        /*
+        Une itération est terminé si au moins 5% de la population totale est arrivé
+         */
         if(nbCellulesArrive >= this.cellules.size()*5/100) {
             this.evoluer();
             this.replacerCellule();
@@ -118,6 +121,6 @@ public class Monde extends Observable {
     }
 
     public List<Cellule> getCellules() {
-        return cellules;
+        return new ArrayList<>(cellules);
     }
 }

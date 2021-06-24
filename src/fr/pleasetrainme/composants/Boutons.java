@@ -12,7 +12,6 @@ public class Boutons extends JPanel {
 
     public Boutons(Principale principale) {
         setLayout(new BorderLayout());
-        //setPreferredSize(new Dimension(400, 100));
         this.choix = new Choix();
         this.controleAlgo = new ControleAlgo(principale);
         add(choix, BorderLayout.NORTH);
