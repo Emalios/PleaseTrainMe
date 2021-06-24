@@ -95,11 +95,14 @@ public class Monde extends Observable {
         int nbMeilleurs = this.cellules.size()*5/100;
         //Ensuite on calcule le nombre de cellule qui va reproduire avec un des meilleurs
         int cellulesParMeilleur = (this.cellules.size()-nbMeilleurs)/nbMeilleurs;
+        int sommeChemin = 0;
         //On fait évoluer les cellules
         for (int i = 0; i < nbMeilleurs; i++) {
             //On ajoute les meilleurs à la nouvelle liste
             Cellule meilleur = this.cellules.get(i);
-            System.out.println("Meilleur chemin: " + meilleur.getNbDeplacements());
+            //on ajoute le meilleur chemin afin de calculer le meilleur chemin moyen parmis les 5%
+            sommeChemin += meilleur.getNbDeplacements();
+            System.out.println("Meilleur chemin moyen: " + meilleur.getNbDeplacements());
             cellules.add(meilleur);
             //On fait se reproduire les meilleurs avec les autres cellules et on ajoute les nouvelles cellules à la liste
             for (int j = 0; j < cellulesParMeilleur; j++) {
@@ -107,6 +110,7 @@ public class Monde extends Observable {
                 cellules.add(meilleur.reproduire(courante));
             }
         }
+        System.out.println("Meilleur chemin moyen: " + sommeChemin/nbMeilleurs);
         this.cellules = cellules;
     }
 
