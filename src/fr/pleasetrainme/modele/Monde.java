@@ -1,39 +1,49 @@
 package fr.pleasetrainme.modele;
 
+import fr.pleasetrainme.Principale;
 import fr.pleasetrainme.composants.Boutons;
+import fr.pleasetrainme.vue.VueGraphique;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 
-public class Monde extends JPanel {
+public class Monde extends Observable {
 
-    private static final int END_Y = 20;
+    /**
+     * représente le timer principale du jeu
+     */
+    private final Timer game;
 
-    private static final int CELLULE_SIZE = 5, ARRIVE_SIZE = 40;
-    private static final Color END_COLOR = Color.GREEN;
-    private static final Color CELLULE_COLOR = Color.BLACK;
-
+    private boolean doitAfficher;
+    /**
+     * nombre courant d'itération
+     */
     private int nombreIteration;
-    private Timer game;
-    private boolean doitAfficher, doitDeplacer;
-    private boolean finIteration;
-    private List<Cellule> cellules;
 
-    public Monde(Boutons boutons) {
-        setPreferredSize(new Dimension(400, 600));
+    /**
+     * liste des cellules présentes dans le monde
+     */
+    private List<Cellule> cellules;
+    private boolean finIteration;
+    private boolean doitDeplacer;
+
+    public Monde(VueGraphique vueGraphique, Boutons boutons) {
+        addObserver(vueGraphique);
         int nbPop = boutons.getChoix().getNbPop();
         this.cellules = new ArrayList<>(nbPop);
         for (int i = 0; i < nbPop; i++) {
             Cellule cellule = new Cellule();
             this.cellules.add(cellule);
         }
-        setBackground(Color.GRAY);
         this.game = new Timer(0, e -> {
             if(doitDeplacer) deplacerMob();
-            if(doitAfficher) repaint();
+            if(doitAfficher) {
+                setChanged();
+                notifyObservers();
+            }
         });
     }
 
@@ -41,16 +51,17 @@ public class Monde extends JPanel {
         int nbCellulesArrive = 0;
         //on déplace les cellules
         for (Cellule cellule : this.cellules) {
-            cellule.seDeplacer(getWidth(), getHeight());
+            cellule.seDeplacer(Principale.WIDTH_MONDE, Principale.HEIGHT_MONDE);
             int celluleX = cellule.getX();
             int celluleY = cellule.getY();
             //on teste si la cellule a atteint l'arrivé
-            if (getWidth() / 2 - ARRIVE_SIZE / 2 > celluleX || celluleX > getWidth() / 2 - ARRIVE_SIZE / 2 + ARRIVE_SIZE) {
+            if (Principale.X_ARRIVE > celluleX || celluleX > Principale.X_ARRIVE + Principale.TAILLE_ARRIVE) {
                 continue;
             }
-            if (END_Y > celluleY || celluleY > END_Y + ARRIVE_SIZE) continue;
+            if (Principale.Y_ARRIVE > celluleY || celluleY > Principale.Y_ARRIVE + Principale.TAILLE_ARRIVE) continue;
             cellule.finIteration();
             nbCellulesArrive++;
+
         }
         if(nbCellulesArrive >= this.cellules.size()*5/100) {
             this.evoluer();
@@ -96,19 +107,6 @@ public class Monde extends JPanel {
         this.cellules = cellules;
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        //on dessine l'arrivé
-        g.setColor(END_COLOR);
-        g.fillRect(getWidth()/2-ARRIVE_SIZE/2, END_Y, ARRIVE_SIZE, ARRIVE_SIZE);
-        //on dessine les cellules
-        g.setColor(CELLULE_COLOR);
-        this.cellules.forEach(cellule -> {
-            g.fillOval(cellule.getX(), cellule.getY(), CELLULE_SIZE, CELLULE_SIZE);
-        });
-    }
-
     public void lancerIteration() {
         this.finIteration = false;
         //on place les cellules à leurs place
@@ -117,5 +115,9 @@ public class Monde extends JPanel {
         this.doitDeplacer = true;
         this.doitAfficher = true;
         this.game.start();
+    }
+
+    public List<Cellule> getCellules() {
+        return cellules;
     }
 }
