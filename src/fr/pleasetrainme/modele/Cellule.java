@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Cellule implements Comparable<Cellule> {
+public class Cellule implements Comparable<Cellule>{
 
     /**
      * Indique de combien de pixel la cellule doit bouger à chaque déplacement
@@ -34,6 +34,11 @@ public class Cellule implements Comparable<Cellule> {
         this.currentGene = 0;
     }
 
+    public Cellule(List<Gene> genes) {
+        this.genes = genes;
+        this.currentGene = 0;
+    }
+
     /**
      * Méthode construisant de nouveaux génes de manière aléatoire de taille taille
      * @param taille taille de la liste de génes
@@ -57,7 +62,7 @@ public class Cellule implements Comparable<Cellule> {
         if(this.estArrive) return;
         //si l'indice courant dépasse la taille de la liste on ne fait rien
         if(this.currentGene >= this.genes.size()) {
-            System.out.println("épuisement des génes");
+            System.out.println("épuisement des génes size: " + this.genes.size() + ";current: " + this.currentGene);
             return;
         }
         //on récupère le géne actuel et on incrémente
@@ -96,15 +101,18 @@ public class Cellule implements Comparable<Cellule> {
         return cellule;
     }
 
-    private void muter() {
+    /**
+     * Méthode permettant de muter aléatoirement les gênes de la cellule courante. 1 chance sur 100 de modifier un gêne
+     */
+    public void muter() {
         Random random = new Random();
         for (int j = 0; j < this.genes.size(); j++) {
-            int nombreRandom = random.nextInt(20);
+            int nombreRandom = random.nextInt(100);
             if(nombreRandom == 0) this.genes.set(j, Gene.getRandomGene());
         }
     }
 
-    private void reset() {
+    public void reset() {
         this.estArrive = false;
         this.currentGene = 0;
         this.muter();
@@ -115,12 +123,6 @@ public class Cellule implements Comparable<Cellule> {
      */
     public void finIteration() {
         this.estArrive = true;
-        //on "coupe" les génes de la cellule pour ne garder que ceux utiles
-        List<Gene> genesUtiles = new ArrayList<>(this.currentGene);
-        for (int i = 0; i < currentGene; i++) {
-            genesUtiles.add(this.genes.get(i));
-        }
-        this.genes = genesUtiles;
     }
 
     /**
@@ -147,6 +149,15 @@ public class Cellule implements Comparable<Cellule> {
 
     public int getNbDeplacements() {
         return currentGene;
+    }
+
+    public Cellule clone() {
+        return new Cellule(this.genes);
+    }
+
+    @Override
+    public String toString() {
+        return "Cellule genes size:" + this.genes.size();
     }
 
     @Override

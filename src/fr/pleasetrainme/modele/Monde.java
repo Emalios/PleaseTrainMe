@@ -32,12 +32,6 @@ public class Monde extends Observable {
 
     public Monde(VueGraphique vueGraphique, Boutons boutons) {
         addObserver(vueGraphique);
-        int nbPop = boutons.getChoix().getNbPop();
-        this.cellules = new ArrayList<>(nbPop);
-        for (int i = 0; i < nbPop; i++) {
-            Cellule cellule = new Cellule();
-            this.cellules.add(cellule);
-        }
         this.game = new Timer(0, e -> {
             if(doitDeplacer) deplacerMob();
             if(doitAfficher) {
@@ -102,10 +96,13 @@ public class Monde extends Observable {
             Cellule meilleur = this.cellules.get(i);
             //on ajoute le meilleur chemin afin de calculer le meilleur chemin moyen parmis les 5%
             sommeChemin += meilleur.getNbDeplacements();
-            cellules.add(meilleur);
+            //On créer une copie du meilleur et on le fait muter (en resetant son compteur de déplacement) afin de l'ajouter à la nouvelle liste
+            Cellule meilleurCopie = meilleur.clone();
+            meilleurCopie.muter();
+            cellules.add(meilleurCopie);
             //On fait se reproduire les meilleurs avec les autres cellules et on ajoute les nouvelles cellules à la liste
             for (int j = 0; j < cellulesParMeilleur; j++) {
-                Cellule courante = this.cellules.get(i*nbMeilleurs+j);
+                Cellule courante = this.cellules.get(i*cellulesParMeilleur+j+nbMeilleurs);
                 cellules.add(meilleur.reproduire(courante));
             }
         }
@@ -113,7 +110,12 @@ public class Monde extends Observable {
         this.cellules = cellules;
     }
 
-    public void lancerIteration() {
+    public void lancerIteration(int nbPop, int nbIteration) {
+        this.cellules = new ArrayList<>(nbPop);
+        for (int i = 0; i < nbPop; i++) {
+            Cellule cellule = new Cellule();
+            this.cellules.add(cellule);
+        }
         this.finIteration = false;
         //on place les cellules à leurs place
         this.replacerCellule();

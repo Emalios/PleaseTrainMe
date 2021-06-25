@@ -12,7 +12,7 @@ public class ControleAlgo extends JPanel {
     public ControleAlgo(Principale principale) {
         //setLayout(new BorderLayout());
         this.lancer = new JButton("Run");
-        this.lancer.addActionListener(e -> principale.getMonde().lancerIteration());
+        this.lancer.addActionListener(e -> principale.getMonde().lancerIteration(principale.getBoutons().getChoix().getNbPop(), principale.getBoutons().getChoix().getNbIteration()));
         this.stop = new JButton("Stop");
         add(this.lancer, BorderLayout.WEST);
         add(this.stop, BorderLayout.EAST);
