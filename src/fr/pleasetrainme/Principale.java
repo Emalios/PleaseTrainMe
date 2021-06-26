@@ -1,6 +1,7 @@
 package fr.pleasetrainme;
 
 import fr.pleasetrainme.composants.Boutons;
+import fr.pleasetrainme.controleur.MondeListener;
 import fr.pleasetrainme.modele.Monde;
 import fr.pleasetrainme.vue.VueGraphique;
 
@@ -24,6 +25,7 @@ public class Principale extends JPanel {
         this.boutons = new Boutons(this);
         VueGraphique vueGraphique = new VueGraphique();
         this.monde = new Monde(vueGraphique, boutons);
+        vueGraphique.addMouseListener(new MondeListener(monde));
         add(vueGraphique, BorderLayout.CENTER);
         add(boutons, BorderLayout.SOUTH);
     }

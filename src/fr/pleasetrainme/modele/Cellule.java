@@ -9,7 +9,7 @@ public class Cellule implements Comparable<Cellule>{
     /**
      * Indique de combien de pixel la cellule doit bouger à chaque déplacement
      */
-    private static final int DEPLACEMENT = 5;
+    public static final int DEPLACEMENT = 5;
 
     /**
      * variable valant vrai si la cellule touche la zone d'arrivé, sinon faux
@@ -102,7 +102,7 @@ public class Cellule implements Comparable<Cellule>{
     }
 
     /**
-     * Méthode permettant de muter aléatoirement les gênes de la cellule courante. 1 chance sur 100 de modifier un gêne
+     * Méthode permettant de muter aléatoirement les gênes de la cellule courante. 1 chance sur 50 de modifier un gêne
      */
     public void muter() {
         Random random = new Random();
@@ -163,5 +163,9 @@ public class Cellule implements Comparable<Cellule>{
     @Override
     public int compareTo(Cellule o) {
         return Integer.compare(this.getNbDeplacements(), o.getNbDeplacements());
+    }
+
+    public void augmenterGene() {
+        this.currentGene++;
     }
 }

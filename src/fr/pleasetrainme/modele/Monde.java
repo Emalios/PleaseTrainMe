@@ -3,6 +3,7 @@ package fr.pleasetrainme.modele;
 import fr.pleasetrainme.Principale;
 import fr.pleasetrainme.composants.Boutons;
 import fr.pleasetrainme.vue.VueGraphique;
+import javafx.scene.control.Cell;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -27,10 +28,17 @@ public class Monde extends Observable {
      * liste des cellules présentes dans le monde
      */
     private List<Cellule> cellules;
+
+    /**
+     * liste des positions des murs présents dans le monde
+     */
+    private List<Position> murs;
     private boolean finIteration;
     private boolean doitDeplacer;
 
     public Monde(VueGraphique vueGraphique, Boutons boutons) {
+        this.murs = new ArrayList<>();
+        this.cellules = new ArrayList<>();
         addObserver(vueGraphique);
         this.game = new Timer(0, e -> {
             if(doitDeplacer) deplacerMob();
@@ -45,14 +53,30 @@ public class Monde extends Observable {
         int nbCellulesArrive = 0;
         //on déplace les cellules
         for (Cellule cellule : this.cellules) {
+            //TODO: refactor ce code en déplaçant la logique de sortir hors de la map ici
+            //On teste si la cellule ne va pas contre un mur
+            int newX = cellule.getX() + Cellule.DEPLACEMENT;
+            int newY = cellule.getY() + Cellule.DEPLACEMENT;
+            boolean seDeplace = true;
+            int i = 0;
+            while (seDeplace && i < murs.size()) {
+                Position posMur = this.murs.get(i++);
+                int murX = posMur.getX();
+                int murY = posMur.getY();
+                if((murX <= newX && newX <= murX + VueGraphique.MUR_SIZE) && (murY <= newY && newY <= murY + VueGraphique.MUR_SIZE)) {
+                    //si la cellule est dans un mur alors elle ne se déplace pas elle augmente juste son déplacement
+                    seDeplace = false;
+                    cellule.augmenterGene();
+                }
+            }
+            //s'il ne peut pas se déplacer on passe à la cellule suivante
+            if(!seDeplace) continue;
             cellule.seDeplacer(Principale.WIDTH_MONDE, Principale.HEIGHT_MONDE);
-            int celluleX = cellule.getX();
-            int celluleY = cellule.getY();
             //on teste si la cellule a atteint l'arrivé
-            if (Principale.X_ARRIVE > celluleX || celluleX > Principale.X_ARRIVE + Principale.TAILLE_ARRIVE) {
+            if (Principale.X_ARRIVE > newX || newX > Principale.X_ARRIVE + Principale.TAILLE_ARRIVE) {
                 continue;
             }
-            if (Principale.Y_ARRIVE > celluleY || celluleY > Principale.Y_ARRIVE + Principale.TAILLE_ARRIVE) continue;
+            if (Principale.Y_ARRIVE > newY || newY > Principale.Y_ARRIVE + Principale.TAILLE_ARRIVE) continue;
             cellule.finIteration();
             nbCellulesArrive++;
 
@@ -125,7 +149,20 @@ public class Monde extends Observable {
         this.game.start();
     }
 
+    /**
+     * Méthode permettant d'enregistrer un mur dans le monde
+     * @param x posX du mur
+     * @param y posY du mur
+     */
+    public void creerMur(int x, int y) {
+        this.murs.add(new Position(x, y));
+        setChanged();
+        notifyObservers();
+    }
+
     public List<Cellule> getCellules() {
         return new ArrayList<>(cellules);
     }
+
+    public List<Position> getMurs() { return new ArrayList<>(murs); }
 }
