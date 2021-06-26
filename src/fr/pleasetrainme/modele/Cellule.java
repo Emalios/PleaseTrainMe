@@ -168,4 +168,18 @@ public class Cellule implements Comparable<Cellule>{
     public void augmenterGene() {
         this.currentGene++;
     }
+
+    public Position peekNextMove() {
+        int x = this.x, y = this.y;
+        //on récupère le géne actuel et on incrémente
+        Gene current = this.genes.get(this.currentGene);
+        //on déplace la cellule
+        switch (current) {
+            case EST: x+=DEPLACEMENT; break;
+            case OUEST: x-=DEPLACEMENT; break;
+            case NORD: y-=DEPLACEMENT; break;
+            case SUD: y+=DEPLACEMENT; break;
+        }
+        return new Position(x, y);
+    }
 }

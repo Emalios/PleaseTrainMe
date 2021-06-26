@@ -55,8 +55,9 @@ public class Monde extends Observable {
         for (Cellule cellule : this.cellules) {
             //TODO: refactor ce code en déplaçant la logique de sortir hors de la map ici
             //On teste si la cellule ne va pas contre un mur
-            int newX = cellule.getX() + Cellule.DEPLACEMENT;
-            int newY = cellule.getY() + Cellule.DEPLACEMENT;
+            Position newPos = cellule.peekNextMove();
+            int newX = newPos.getX();
+            int newY = newPos.getY();
             boolean seDeplace = true;
             int i = 0;
             while (seDeplace && i < murs.size()) {
@@ -84,7 +85,9 @@ public class Monde extends Observable {
         /*
         Une itération est terminé si au moins 5% de la population totale est arrivé
          */
-        if(nbCellulesArrive >= this.cellules.size()*5/100) {
+        int truc = this.cellules.size()*5/100;
+        if(truc == 0) truc = 1;
+        if(nbCellulesArrive >= truc) {
             this.evoluer();
             this.replacerCellule();
             System.out.println("Début de l'itération: " + this.nombreIteration++);
