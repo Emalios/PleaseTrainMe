@@ -3,7 +3,6 @@ package fr.pleasetrainme.modele;
 import fr.pleasetrainme.Principale;
 import fr.pleasetrainme.composants.Boutons;
 import fr.pleasetrainme.vue.VueGraphique;
-import javafx.scene.control.Cell;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -108,12 +107,14 @@ public class Monde extends Observable {
      * Méthode faisant évoluer la liste courante des cellules afin d'améliorer leur score.
      */
     private void evoluer() {
-        List<Cellule> cellules = new ArrayList<>(this.cellules.size());
+        List<Cellule> newCellules = new ArrayList<>(this.cellules.size());
         Collections.sort(this.cellules);
         /*
         On prend les meilleurs de la population afin de les reproduire, pour déterminer combien de meilleurs nous prenons, on calcule '5%' de la population totale
          */
         int nbMeilleurs = this.cellules.size()*5/100;
+        //on s'inspire aussi de 5% des pires
+        int nbPires = this.cellules.size()*5/100;
         //Ensuite on calcule le nombre de cellule qui va reproduire avec un des meilleurs
         int cellulesParMeilleur = (this.cellules.size()-nbMeilleurs)/nbMeilleurs;
         int sommeChemin = 0;
@@ -126,15 +127,16 @@ public class Monde extends Observable {
             //On créer une copie du meilleur et on le fait muter (en resetant son compteur de déplacement) afin de l'ajouter à la nouvelle liste
             Cellule meilleurCopie = meilleur.clone();
             meilleurCopie.muter();
-            cellules.add(meilleurCopie);
+            newCellules.add(meilleurCopie);
             //On fait se reproduire les meilleurs avec les autres cellules et on ajoute les nouvelles cellules à la liste
             for (int j = 0; j < cellulesParMeilleur; j++) {
                 Cellule courante = this.cellules.get(i*cellulesParMeilleur+j+nbMeilleurs);
-                cellules.add(meilleur.reproduire(courante));
+                Cellule worstCurrent = this.cellules.get(this.cellules.size() - (i * cellulesParMeilleur + j + nbMeilleurs));
+                newCellules.add(meilleur.reproduire(courante).reproduire(worstCurrent));
             }
         }
         System.out.println("Meilleur chemin moyen: " + sommeChemin/nbMeilleurs);
-        this.cellules = cellules;
+        this.cellules = newCellules;
     }
 
     public void lancerIteration(int nbPop, int nbIteration) {
