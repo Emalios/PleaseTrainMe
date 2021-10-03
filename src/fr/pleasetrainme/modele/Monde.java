@@ -114,7 +114,6 @@ public class Monde extends Observable {
          */
         int nbMeilleurs = this.cellules.size()*5/100;
         //on s'inspire aussi de 5% des pires
-        int nbPires = this.cellules.size()*5/100;
         //Ensuite on calcule le nombre de cellule qui va reproduire avec un des meilleurs
         int cellulesParMeilleur = (this.cellules.size()-nbMeilleurs)/nbMeilleurs;
         int sommeChemin = 0;
