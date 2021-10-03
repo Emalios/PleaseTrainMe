@@ -131,7 +131,7 @@ public class Monde extends Observable {
             for (int j = 0; j < cellulesParMeilleur; j++) {
                 Cellule courante = this.cellules.get(i*cellulesParMeilleur+j+nbMeilleurs);
                 Cellule worstCurrent = this.cellules.get(this.cellules.size() - (i * cellulesParMeilleur + j + nbMeilleurs));
-                newCellules.add(meilleur.reproduire(courante).reproduire(worstCurrent));
+                newCellules.add(meilleur.reproduire(worstCurrent).reproduire(courante));
             }
         }
         System.out.println("Meilleur chemin moyen: " + sommeChemin/nbMeilleurs);
