@@ -114,7 +114,6 @@ public class Monde extends Observable {
          */
         int nbMeilleurs = this.cellules.size()*5/100;
         //on s'inspire aussi de 5% des pires
-        int nbPires = this.cellules.size()*5/100;
         //Ensuite on calcule le nombre de cellule qui va reproduire avec un des meilleurs
         int cellulesParMeilleur = (this.cellules.size()-nbMeilleurs)/nbMeilleurs;
         int sommeChemin = 0;
@@ -132,7 +131,7 @@ public class Monde extends Observable {
             for (int j = 0; j < cellulesParMeilleur; j++) {
                 Cellule courante = this.cellules.get(i*cellulesParMeilleur+j+nbMeilleurs);
                 Cellule worstCurrent = this.cellules.get(this.cellules.size() - (i * cellulesParMeilleur + j + nbMeilleurs));
-                newCellules.add(meilleur.reproduire(courante).reproduire(worstCurrent));
+                newCellules.add(meilleur.reproduire(worstCurrent).reproduire(courante));
             }
         }
         System.out.println("Meilleur chemin moyen: " + sommeChemin/nbMeilleurs);
@@ -163,6 +162,13 @@ public class Monde extends Observable {
         this.murs.add(new Position(x, y));
         setChanged();
         notifyObservers();
+    }
+
+    public void stop() {
+        this.cellules = new ArrayList<>();
+        this.murs = new ArrayList<>();
+        this.finIteration = true;
+        System.out.println("Arrêt forcé de l'évolution");
     }
 
     public List<Cellule> getCellules() {
