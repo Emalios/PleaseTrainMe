@@ -164,6 +164,13 @@ public class Monde extends Observable {
         notifyObservers();
     }
 
+    public void stop() {
+        this.cellules = new ArrayList<>();
+        this.murs = new ArrayList<>();
+        this.finIteration = true;
+        System.out.println("Arrêt forcé de l'évolution");
+    }
+
     public List<Cellule> getCellules() {
         return new ArrayList<>(cellules);
     }
